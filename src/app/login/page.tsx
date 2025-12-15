@@ -42,24 +42,7 @@ export default function LoginPage() {
             Sign in to your account
           </p>
         </div>
-        
-        {/* Test Credentials Info */}
-        <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-          <h3 className="text-sm font-medium text-blue-800 mb-2">Test Credentials:</h3>
-          <div className="text-sm text-blue-700 space-y-2">
-            <div>
-              <p className="font-semibold">HOD (Admin):</p>
-              <p><strong>Email:</strong> hod-csedept@nitpy.ac.in</p>
-              <p><strong>Password:</strong> NITPY123</p>
-            </div>
-            <div>
-              <p className="font-semibold">Employee:</p>
-              <p><strong>Email:</strong> john.doe@nitpy.ac.in</p>
-              <p><strong>Password:</strong> password123</p>
-            </div>
-          </div>
-        </div>
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>

@@ -124,7 +124,7 @@ CREATE TABLE login_logs (
    ```
 
 3. **Open your browser**
-   Navigate to `http://localhost:3000`
+   Navigate to `http://localhost:3005`
 
 ### Environment Configuration
 
@@ -139,6 +139,25 @@ DB_USER=root
 DB_PASSWORD=your_password
 DB_NAME=your_database
 ```
+
+### Database Initialization
+
+This repo includes a MySQL schema script you can use to create the required tables:
+
+```bash
+# 1) Create a database (use the same name as DB_NAME)
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS your_database CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+
+# 2) Create tables
+mysql -u root -p your_database < database/init.sql
+```
+
+The init script also seeds one initial HOD user for first-time login:
+
+- Email: `hod@example.com`
+- Password: `ChangeMe123!`
+
+Change this password immediately after first login (or remove the seed insert from `database/init.sql` for production).
 
 ### Notes for Deployment
 
