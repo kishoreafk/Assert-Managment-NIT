@@ -11,6 +11,13 @@ export async function POST(req: NextRequest) {
     if (!email || !password) {
       return NextResponse.json({ error: 'Missing email or password' }, { status: 400 });
     }
+
+    // Check database connection
+    if (!pool) {
+      console.error('Database pool not initialized');
+      return NextResponse.json({ error: 'Database connection failed' }, { status: 500 });
+    }
+
     type UserRow = RowDataPacket & {
       id: number;
       name: string;
@@ -33,7 +40,8 @@ export async function POST(req: NextRequest) {
     const { password_hash: _passwordHash, ...userInfo } = user;
     return NextResponse.json({ user: userInfo });
   } catch (error) {
+    console.error('Login error:', error);
     const details = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ error: 'Login failed', details }, { status: 500 });
   }
-} 
+}

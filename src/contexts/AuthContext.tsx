@@ -16,15 +16,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const initializeAuth = () => {
       try {
         const userData = localStorage.getItem("user");
-        
-        if (userData) {
-          const user = JSON.parse(userData);
-          setUser(user);
-          setIsAuthenticated(true);
+        const token = localStorage.getItem("token");
+
+        if (userData && token) {
+          try {
+            const user = JSON.parse(userData);
+            setUser(user);
+            setIsAuthenticated(true);
+          } catch (parseError) {
+            console.error("Error parsing user data:", parseError);
+            // Clear corrupted data
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+          }
         }
       } catch (error) {
-        console.error("Error parsing user data:", error);
+        console.error("Error initializing auth:", error);
+        // Clear all auth data on error
         localStorage.removeItem("user");
+        localStorage.removeItem("token");
       } finally {
         setIsLoading(false);
       }
@@ -63,4 +73,4 @@ export function useAuth() {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
-} 
+}

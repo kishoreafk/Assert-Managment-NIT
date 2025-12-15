@@ -29,20 +29,40 @@ api.interceptors.response.use(
 
 // Auth API
 export async function login(email: string, password: string) {
-  const res = await fetch('/api/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
-  });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.error || 'Login failed');
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const contentType = res.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('Server returned non-JSON response. Please check database connection.');
+    }
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Login failed');
+    }
+
+    // Validate response structure
+    if (!data.user) {
+      throw new Error('Invalid response format from server');
+    }
+
+    localStorage.setItem('user', JSON.stringify(data.user));
+    // The current API does not issue JWTs; keep a lightweight session flag for client routing.
+    localStorage.setItem('token', 'session');
+    return data;
+  } catch (error) {
+    console.error('Login API error:', error);
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Network error occurred during login');
   }
-  const data = await res.json();
-  localStorage.setItem('user', JSON.stringify(data.user));
-  // The current API does not issue JWTs; keep a lightweight session flag for client routing.
-  localStorage.setItem('token', 'session');
-  return data;
 }
 
 export async function logout() {
@@ -165,4 +185,4 @@ export async function fetchLoginLogs() {
   return await res.json();
 }
 
-export default api; 
+export default api;
